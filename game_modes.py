@@ -3,6 +3,7 @@ import random
 import time
 from utilities import safe_int_input
 from characters import Yuji, Gojo, Sukuna, Yuta, Yuki, Megumi, Todo, Choso, Naoya, Uraume, Nanami, Maki, Toji, Jogo, Mahito, Kenjaku
+from dialogue import dialogue
 list_characters = {"Yuji": Yuji(), "Gojo": Gojo(), "Yuta": Yuta(), "Choso": Choso(), "Yuki": Yuki(), "Todo": Todo(), "Megumi": Megumi(), "Maki": Maki(), "Sukuna": Sukuna(), "Toji": Toji(), "Kenjaku": Kenjaku(), "Mahito": Mahito(), "Jogo": Jogo(), "Uraume": Uraume(), "Naoya": Naoya(), "Nanami":Nanami()}
 def status(character, enemy, turn): #Creates the status at where everyone is at
   if turn > 1:
@@ -69,6 +70,8 @@ def one_vs_one_game(): #The main game
   print(f"\n{character.name}: Oh, you will regret stepping up against me...")
   time.sleep(0.7)
   print(f"{enemy.name}: I won't regret it if I destroy you first.")
+
+  dialogue(character.name, enemy.name)
   print()
   enemy.show_moves()
 
@@ -127,12 +130,15 @@ def sandbox(): #ai vs ai fight
   print(f"{character.name}---{character.title}\nVS\n{enemy.name}---{enemy.title}")
   character.ai = True
   enemy.ai = True
+
   while character.is_alive() and enemy.is_alive():
     turn += 1
     print(f"Turn {turn}")
     status(character, enemy, turn)
     fight_ai(character, enemy)
+    time.sleep(2.5)
     fight_ai(enemy, character)
+    time.sleep(2.5)
     character.reduce_cooldown() #reduces the cooldown by 1 every turn
     enemy.reduce_cooldown()
     character.apply_status_effect(enemy)
