@@ -133,3 +133,9 @@ def dialogue(character, enemy):
       print("\nYuji Itadori: Oh, you again \nHave you always been this weak?")
       time.sleep(0.7)
       print("\nMahito: OH DO NOT UNDERESTIMATE ME!")
+  else: 
+      print(f"\n{character.name} sees {enemy.name}")
+      time.sleep(0.7)
+      print(f"\n{character.name}: Oh, you will regret stepping up against me...")
+      time.sleep(0.7)
+      print(f"{enemy.name}: I won't regret it if I destroy you first.")

@@ -65,12 +65,6 @@ def one_vs_one_game(): #The main game
   print(f"Tip: {character.tip}")
   print(f"The enemy is {enemy}---{enemy.title}")
   turn = 1
-  print(f"\n{character.name} sees {enemy.name}")
-  time.sleep(0.7)
-  print(f"\n{character.name}: Oh, you will regret stepping up against me...")
-  time.sleep(0.7)
-  print(f"{enemy.name}: I won't regret it if I destroy you first.")
-
   dialogue(character.name, enemy.name)
   print()
   enemy.show_moves()
@@ -128,6 +122,7 @@ def sandbox(): #ai vs ai fight
       print(*list_characters.keys())
       enemy = input("").capitalize()
   print(f"{character.name}---{character.title}\nVS\n{enemy.name}---{enemy.title}")
+  dialogue(character.name, enemy.name)
   character.ai = True
   enemy.ai = True
 
@@ -187,6 +182,7 @@ def player_vs_player(): #both players fighting
   print(f"Tip: {character.tip}")
   print(f"\nThe Second Player: {enemy}---{enemy.title}")
   print(f"Tip: {enemy.tip}")
+  dialogue(character.name, enemy.name)
   turn = 1
   while character.is_alive() and enemy.is_alive():
     print(f"Turn: {turn}")

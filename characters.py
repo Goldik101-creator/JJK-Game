@@ -2,7 +2,7 @@ from moves import Move
 from utilities import safe_int_input
 import random
 import time
-PAUSE = 0.7
+PAUSE = 1.2
  
 DOMAIN_MOVES = [
     "Malevolent Shrine", "Unlimited Void", "Chimera Shadow Garden",
