@@ -1,0 +1,119 @@
+{
+  "matches": 11,
+  "players": {
+    "Aslan": {
+      "wins": 4,
+      "losses": 6,
+      "draws": 0,
+      "picks": {
+        "Ryomen Sukuna": 1,
+        "Yuji Itadori": 1,
+        "Naoya Zenin": 2,
+        "Choso Kamo": 1,
+        "Toji Fushiguro": 1,
+        "Kento Nanami": 1,
+        "Yuta Okkotsu": 2,
+        "Yuki Tsukumo": 1
+      }
+    },
+    "Asker": {
+      "wins": 0,
+      "losses": 2,
+      "draws": 0,
+      "picks": {
+        "Yuji Itadori": 1,
+        "Choso Kamo": 1
+      }
+    }
+  },
+  "characters": {
+    "Ryomen Sukuna": {
+      "wins": 0,
+      "losses": 1,
+      "draws": 0,
+      "picks": {
+        "Ryomen Sukuna": 1
+      }
+    },
+    "Aoi Todo": {
+      "wins": 1,
+      "losses": 1,
+      "draws": 0,
+      "picks": {
+        "Aoi Todo": 2
+      }
+    },
+    "Yuji Itadori": {
+      "wins": 1,
+      "losses": 2,
+      "draws": 0,
+      "picks": {
+        "Yuji Itadori": 3
+      }
+    },
+    "Megumi Fushiguro": {
+      "wins": 2,
+      "losses": 0,
+      "draws": 0,
+      "picks": {
+        "Megumi Fushiguro": 2
+      }
+    },
+    "Naoya Zenin": {
+      "wins": 2,
+      "losses": 1,
+      "draws": 0,
+      "picks": {
+        "Naoya Zenin": 3
+      }
+    },
+    "Choso Kamo": {
+      "wins": 0,
+      "losses": 3,
+      "draws": 0,
+      "picks": {
+        "Choso Kamo": 3
+      }
+    },
+    "Jogo": {
+      "wins": 1,
+      "losses": 0,
+      "draws": 0,
+      "picks": {
+        "Jogo": 1
+      }
+    },
+    "Toji Fushiguro": {
+      "wins": 2,
+      "losses": 0,
+      "draws": 0,
+      "picks": {
+        "Toji Fushiguro": 2
+      }
+    },
+    "Kento Nanami": {
+      "wins": 1,
+      "losses": 0,
+      "draws": 0,
+      "picks": {
+        "Kento Nanami": 1
+      }
+    },
+    "Yuta Okkotsu": {
+      "wins": 1,
+      "losses": 2,
+      "draws": 0,
+      "picks": {
+        "Yuta Okkotsu": 3
+      }
+    },
+    "Yuki Tsukumo": {
+      "wins": 0,
+      "losses": 1,
+      "draws": 0,
+      "picks": {
+        "Yuki Tsukumo": 1
+      }
+    }
+  }
+}
