@@ -17,7 +17,7 @@ UNDODGEABLE_MOVES = {"Inverted Spear Of Heaven", "Soul Split Katana Slash"}
 # (low, high) of a 0-100 roll that counts as a dodge
 DEFAULT_DODGE = (52, 58)
 DODGE_RANGES = {
-    "Toji Fushiguro": (47, 63),
+    "Toji Fushiguro": (45, 65),
     "Maki Zenin": (47, 63),
     "Satoru Gojo": (47, 63),
 }
@@ -50,9 +50,6 @@ def say(text):
     print(text)
  
  
-# ----------------------------------------------------------------------
-# Base class
-# ----------------------------------------------------------------------
 class Jjk:
     number = 0  # how many fighters have been created
  
@@ -179,9 +176,6 @@ class Jjk:
                 print(f"{self.name}'s simple domain shattered")
                 self.simple_domain = False
  
-    # ------------------------------------------------------------------
-    # Healing and special moves
-    # ------------------------------------------------------------------
     def _yuta_technique_bonus(self, message, index):
         print(message)
         choice = random.choice(list(YUTA_TECHNIQUES))
@@ -443,7 +437,7 @@ class Jjk:
     def damage_attack(self, enemy, move, can_dodge=True):
         # Opening a domain does no damage
         if move.is_domain:
-            self.activate_domain(move.name, 3)
+            self.activate_domain(move.name, 4)
             self._finish_move(move)
             return True
  
@@ -480,7 +474,7 @@ class Jjk:
             return False
  
         if move.name == "Simple Domain":
-            self.activate_simple_domain(2)
+            self.activate_simple_domain(3)
             self._finish_move(move)
             return True
         if move.damage < 0:
@@ -572,8 +566,8 @@ class Maki(Jjk):
                          "Zero Cursed Energy Empress")
         self.add_moves(Move("Polearms hit", 20, 0, 0), start_cd=0)
         self.add_moves(Move("Mai's Wrath", 30, 1, 0), start_cd=2)
-        self.add_moves(Move("Focus", 0, 0, 0), start_cd=0)
-        self.add_moves(Move("Soul Split Katana Slash", 40, 3, 0), start_cd=4)
+        self.add_moves(Move("Dragon Bone", 33, 3, 0), start_cd = 4)
+        self.add_moves(Move("Soul Split Katana Slash", 40, 4, 0), start_cd=4)
  
  
 class Megumi(Jjk):
@@ -664,8 +658,8 @@ class Toji(Jjk):
                          "No Cursed Energy Monster")
         self.add_moves(Move("Punch", 20, 0, 0), start_cd=0)
         self.add_moves(Move("Sword Slash", 30, 1, 0), start_cd=2)
-        self.add_moves(Move("Focus", 0, 0, 0), start_cd=0)
-        self.add_moves(Move("Inverted Spear Of Heaven", 40, 3, 0), start_cd=4)
+        self.add_moves(Move("Chain of a Thousand Miles", 33, 3, 0), start_cd = 4)
+        self.add_moves(Move("Inverted Spear Of Heaven", 40, 4, 0), start_cd=4)
  
  
 class Kenjaku(Jjk):
