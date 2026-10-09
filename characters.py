@@ -378,7 +378,7 @@ class Jjk:
             print("Toji Fushiguro gets mildly affected by the domain.")
  
         if self.name == "Maki Zenin" and self.hp <= self.max_hp / 2:
-            damage += 10
+            damage += 5
             print("Maki Zenin enters a rage mode.")
  
         handler = DOMAIN_EFFECTS.get(self.domain_name)
@@ -555,8 +555,8 @@ class Choso(Jjk):
         self.add_moves(Move("Convergence", 20, 0, 15, blood=True), start_cd=0)
         self.add_moves(Move("Piercing Blood", 23, 2, 17, blood=True), start_cd=2)
         self.add_moves(Move("Supernova", 20, 3, 20), start_cd=2)
-        self.add_moves(Move("Focus", 0, 0, 0), start_cd=0)
         self.add_moves(Move("Slicing Exorcism", 31, 3, 21, blood=True), start_cd=3)
+        self.add_moves(Move("Focus", 0, 0, 0), start_cd=0)
  
  
 class Maki(Jjk):
@@ -564,16 +564,16 @@ class Maki(Jjk):
         super().__init__("Maki Zenin", 172, 0,
                          "Soul Split Katana Slash cannot be dodged. She has extra damage when in low health.",
                          "Zero Cursed Energy Empress")
-        self.add_moves(Move("Polearms hit", 20, 0, 0), start_cd=0)
-        self.add_moves(Move("Mai's Wrath", 30, 1, 0), start_cd=2)
-        self.add_moves(Move("Dragon Bone", 33, 3, 0), start_cd = 4)
-        self.add_moves(Move("Soul Split Katana Slash", 40, 4, 0), start_cd=4)
+        self.add_moves(Move("Polearms hit", 19, 0, 0), start_cd=0)
+        self.add_moves(Move("Mai's Wrath", 29, 1, 0), start_cd=2)
+        self.add_moves(Move("Dragon Bone", 35, 4, 0), start_cd = 4)
+        self.add_moves(Move("Soul Split Katana Slash", 37, 5, 0), start_cd=4)
  
  
 class Megumi(Jjk):
     def __init__(self):
         super().__init__("Megumi Fushiguro", 150, 103,
-                         "Divine General Mahoraga can force stalemates. Be careful.",
+                         "Round Dear is a healing move. Divine General Mahoraga can force stalemates. Be careful.",
                          "Potential Man")
         self.add_moves(Move("Divine Dogs", 18, 0, 12), start_cd=0)
         self.add_moves(Move("Toad", 24, 2, 13), start_cd=1)
@@ -587,14 +587,14 @@ class Megumi(Jjk):
 class Todo(Jjk):
     def __init__(self):
         super().__init__("Aoi Todo", 168, 95,
-                         "Boogie Woogie has around a 20 percent chance to dodge. Use it before the opponent uses their trump card. Simple Domain nullifies a chunk of damage.",
+                         "Boogie Woogie has around a 41 percent chance to dodge. Use it before the opponent uses their trump card. Simple Domain nullifies a chunk of damage.",
                          "The Loyal Besto Friendo")
         self.add_moves(Move("Boogie Woogie", 13, 2, 20), start_cd=0)
         self.add_moves(Move("Black Flash", 35, 4, 25, crit=2, soul_resistence=True), start_cd=3)
         self.add_moves(Move("Besto Friendo", 20, 1, 0), start_cd=1)
-        self.add_moves(Move("Focus", 0, 0, 0), start_cd=0)
         self.add_moves(Move("Simple Domain", 0, 4, 30), start_cd=2)
         self.add_moves(Move("Takada + Besto Friendo", 32, 2, 24), start_cd=3)
+        self.add_moves(Move("Focus", 0, 0, 0), start_cd=0)
  
  
 class Yuki(Jjk):
@@ -606,8 +606,8 @@ class Yuki(Jjk):
         self.add_moves(Move("Mass Control", 27, 2, 20), start_cd=1)
         self.add_moves(Move("Black Hole", 0, 10, 20), start_cd=10)
         self.add_moves(Move("Reverse Cursed Technique", -20, 2, 25), start_cd=1)
-        self.add_moves(Move("Focus", 0, 0, 0), start_cd=0)
         self.add_moves(Move("Simple Domain", 0, 4, 30), start_cd=2)
+        self.add_moves(Move("Focus", 0, 0, 0), start_cd=0)
         self.add_moves(Move("Celestial Star Forge", 0, 5, 50, is_domain=True), start_cd=5)
  
  
@@ -632,8 +632,8 @@ class Nanami(Jjk):
                          "The Workaholic")
         self.add_moves(Move("Ratio Technique", 26, 0, 15, crit=1.53), start_cd=0)
         self.add_moves(Move("Collapsed Strike", 34, 2, 25, crit=1.6), start_cd=2)
-        self.add_moves(Move("Focus", 0, 0, 0), start_cd=0)
         self.add_moves(Move("Black Flash", 35, 3, 25, crit=2, soul_resistence=True), start_cd=3)
+        self.add_moves(Move("Focus", 0, 0, 0), start_cd=0)
  
  
 class Sukuna(Jjk):
@@ -646,8 +646,8 @@ class Sukuna(Jjk):
         self.add_moves(Move("Fuga", 36, 4, 35, burn=True), start_cd=2)
         self.add_moves(Move("Black Flash", 35, 4, 25, crit=2, soul_resistence=True), start_cd=3)
         self.add_moves(Move("Reverse Cursed Technique", -20, 2, 30), start_cd=1)
-        self.add_moves(Move("World Cutting Slash", 100, 11, 150, soul_resistence=True), start_cd=11)
         self.add_moves(Move("Focus", 0, 0, 0), start_cd=0)
+        self.add_moves(Move("World Cutting Slash", 100, 11, 150, soul_resistence=True), start_cd=11)
         self.add_moves(Move("Malevolent Shrine", 0, 5, 50, is_domain=True), start_cd=5)
  
  
@@ -656,16 +656,16 @@ class Toji(Jjk):
         super().__init__("Toji Fushiguro", 174, 0,
                          "Toji becomes stronger when the opponent opens their domain. Inverted Spear of Heaven can not be dodged.",
                          "No Cursed Energy Monster")
-        self.add_moves(Move("Punch", 20, 0, 0), start_cd=0)
-        self.add_moves(Move("Sword Slash", 30, 1, 0), start_cd=2)
-        self.add_moves(Move("Chain of a Thousand Miles", 33, 3, 0), start_cd = 4)
-        self.add_moves(Move("Inverted Spear Of Heaven", 40, 4, 0), start_cd=4)
+        self.add_moves(Move("Punch", 19, 0, 0), start_cd=0)
+        self.add_moves(Move("Sword Slash", 29, 1, 0), start_cd=2)
+        self.add_moves(Move("Chain of a Thousand Miles", 34, 4, 0), start_cd = 4)
+        self.add_moves(Move("Inverted Spear Of Heaven", 42, 5, 0), start_cd=4)
  
  
 class Kenjaku(Jjk):
     def __init__(self):
         super().__init__("Kenjaku", 149, 115,
-                         "Kenjaku has a chance to receive less damage when under a certain amount of HP.",
+                         "Kenjaku has a chance to receive less damage when the attack is too strong.",
                          "The Immortal")
         self.add_moves(Move("Cursed Spirit Manipulation", 20, 0, 15), start_cd=0)
         self.add_moves(Move("Maximum: Uzumaki", 39, 4, 25), start_cd=2)
@@ -707,8 +707,8 @@ class Uraume(Jjk):
         self.add_moves(Move("Icefall", 22, 0, 15), start_cd=0)
         self.add_moves(Move("Frost Calm", 32, 2, 22), start_cd=1)
         self.add_moves(Move("Frost Barrage", 27, 3, 30, freeze=True), start_cd=2)
-        self.add_moves(Move("Focus", 0, 0, 0), start_cd=0)
         self.add_moves(Move("Reverse Cursed Technique", -20, 2, 25), start_cd=1)
+        self.add_moves(Move("Focus", 0, 0, 0), start_cd=0)
  
  
 class Naoya(Jjk):
