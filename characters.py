@@ -83,7 +83,8 @@ class Jjk:
         self.projection_active = False
         self.boogie_woogie_dodge = False
         self.overtime = False
- 
+        self.chill = 0 
+        self.flash_streak = 0
         Jjk.number += 1
  
     def __str__(self):
@@ -399,9 +400,10 @@ class Jjk:
             if move.name in ("Ratio Technique", "Collapsed Strike") and random.randint(1, 100) <= 45:
                 print("\nNanami struck the 7:3 weak point!")
                 damage += 5
- 
+
+        if self.chill:
+            damage = int(damage * (1 - 0.04 * self.chill))
         return damage
- 
     def _apply_defender_reductions(self, enemy, move, damage):
         if enemy.domain_name == "Unlimited Void":
             damage = max(damage // 2, 0)
@@ -485,7 +487,15 @@ class Jjk:
         if move.name == "Call to Rika":
             return self.call_to_rika(enemy, move.cooldown, move.ce_cost)
         return self.damage_attack(enemy, move)
- 
+    def _ai_value(self, move, enemy):
+        if move.name == "Supernova":
+            return move.damage + enemy.blood_stack * 6
+        if move.name == "Call to Rika":
+            return 38
+        if move.name == "Projection Sorcery":
+            return max(0, 34 - self.speed_stack * 9)
+        return move.damage
+    
     def choose_move(self, enemy):
         if self.name not in ("Toji Fushiguro", "Maki Zenin") and self.ce <= 15:
             return "focus"
@@ -498,7 +508,7 @@ class Jjk:
             return "focus"
  
         def strongest():
-            return max(available, key=lambda pair: pair[1].damage)[0]
+            return max(available, key=lambda pair: self._ai_value(pair[1], enemy))[0]
  
         if self.hp <= 25:
             if enemy.hp < 30:
@@ -519,7 +529,7 @@ class Jjk:
 
 class Yuji(Jjk):
     def __init__(self):
-        super().__init__("Yuji Itadori", 162, 103,
+        super().__init__("Yuji Itadori", 178, 103,
                          "Black Flashes have a 10 percent chance to do double damage. Simple Domain nullifies a chunk of damage.",
                          "The Strongest of The Future")
         self.add_moves(Move("Divergent Fist", 17, 0, 10, soul_resistence=True), start_cd=0)
@@ -530,11 +540,19 @@ class Yuji(Jjk):
         self.add_moves(Move("Focus", 0, 0, 0), start_cd=0)
         self.add_moves(Move("Simple Domain", 0, 4, 30), start_cd=2)
         self.add_moves(Move("Benevolent Shrine", 0, 5, 50, is_domain=True), start_cd=5)
+    
+    def modify_outgoing(self, enemy, move, damage):
+        if move.name == "Black Flash":
+            if self.flash_streak:
+                damage += self.flash_streak * 4
+                print(f"{self.name} is in the zone! (+{self.flash_streak * 4} damage)")
+            self.flash_streak = min(3, self.flash_streak + 1)
+        return damage
  
  
 class Gojo(Jjk):
     def __init__(self):
-        super().__init__("Satoru Gojo", 144, 140,
+        super().__init__("Satoru Gojo", 133, 140,
                          "Gojo has a 17 percent chance of dodging. Hollow Purple and Black Flash has a 10 percent chance to do double the damage. Simple Domain nullifies a chunk of damage.",
                          "The Honored One")
         self.add_moves(Move("Blue", 20, 0, 15, soul_resistence=True), start_cd=0)
@@ -544,24 +562,24 @@ class Gojo(Jjk):
         self.add_moves(Move("Black Flash", 35, 3, 25, crit=2, soul_resistence=True), start_cd=3)
         self.add_moves(Move("Focus", 0, 0, 0), start_cd=0)
         self.add_moves(Move("Simple Domain", 0, 4, 30), start_cd=2)
-        self.add_moves(Move("Unlimited Void", 0, 5, 35, is_domain=True), start_cd=5)
+        self.add_moves(Move("Unlimited Void", 0, 5, 45, is_domain=True), start_cd=5)
  
  
 class Choso(Jjk):
     def __init__(self):
-        super().__init__("Choso Kamo", 150, 93,
+        super().__init__("Choso Kamo", 160, 93,
                          "Save his blood stacks for supernova as the blood stacks can EXPLODE with Supernova dealing extra burst damage.",
                          "The Blood Brother")
         self.add_moves(Move("Convergence", 20, 0, 15, blood=True), start_cd=0)
         self.add_moves(Move("Piercing Blood", 23, 2, 17, blood=True), start_cd=2)
-        self.add_moves(Move("Supernova", 20, 3, 20), start_cd=2)
+        self.add_moves(Move("Supernova", 24, 3, 20), start_cd=2)
         self.add_moves(Move("Slicing Exorcism", 31, 3, 21, blood=True), start_cd=3)
         self.add_moves(Move("Focus", 0, 0, 0), start_cd=0)
  
  
 class Maki(Jjk):
     def __init__(self):
-        super().__init__("Maki Zenin", 172, 0,
+        super().__init__("Maki Zenin", 122, 0,
                          "Soul Split Katana Slash cannot be dodged. She has extra damage when in low health.",
                          "Zero Cursed Energy Empress")
         self.add_moves(Move("Polearms hit", 19, 0, 0), start_cd=0)
@@ -572,7 +590,7 @@ class Maki(Jjk):
  
 class Megumi(Jjk):
     def __init__(self):
-        super().__init__("Megumi Fushiguro", 150, 103,
+        super().__init__("Megumi Fushiguro", 157, 103,
                          "Round Dear is a healing move. Divine General Mahoraga can force stalemates. Be careful.",
                          "Potential Man")
         self.add_moves(Move("Divine Dogs", 18, 0, 12), start_cd=0)
@@ -586,7 +604,7 @@ class Megumi(Jjk):
  
 class Todo(Jjk):
     def __init__(self):
-        super().__init__("Aoi Todo", 168, 95,
+        super().__init__("Aoi Todo", 154, 95,
                          "Boogie Woogie has around a 41 percent chance to dodge. Use it before the opponent uses their trump card. Simple Domain nullifies a chunk of damage.",
                          "The Loyal Besto Friendo")
         self.add_moves(Move("Boogie Woogie", 13, 2, 20), start_cd=0)
@@ -599,11 +617,11 @@ class Todo(Jjk):
  
 class Yuki(Jjk):
     def __init__(self):
-        super().__init__("Yuki Tsukumo", 162, 124,
+        super().__init__("Yuki Tsukumo", 177, 124,
                          "Black Hole can force stalemates. Simple Domain nullifies a chunk of damage.",
                          "The Star Vessel")
-        self.add_moves(Move("Garudo Attack", 23, 0, 15), start_cd=0)
-        self.add_moves(Move("Mass Control", 27, 2, 20), start_cd=1)
+        self.add_moves(Move("Garudo Attack", 25, 0, 15), start_cd=0)
+        self.add_moves(Move("Mass Control", 29, 2, 20), start_cd=1)
         self.add_moves(Move("Black Hole", 0, 10, 20), start_cd=10)
         self.add_moves(Move("Reverse Cursed Technique", -20, 2, 25), start_cd=1)
         self.add_moves(Move("Simple Domain", 0, 4, 30), start_cd=2)
@@ -613,14 +631,14 @@ class Yuki(Jjk):
  
 class Yuta(Jjk):
     def __init__(self):
-        super().__init__("Yuta Okkotsu", 144, 146,
+        super().__init__("Yuta Okkotsu", 168, 146,
                          "'Call to Rika' gives the user access to more copied techniques that can be used. Inside it, Hollow Purple and Black Flash have a 10 percent chance of doing double damage.",
                          "The Prodigy")
         self.add_moves(Move("CE Reserve", 20, 0, 20), start_cd=0)
-        self.add_moves(Move("Slash", 23, 2, 25), start_cd=1)
+        self.add_moves(Move("Slash", 23, 2, 20), start_cd=1)
         self.add_moves(Move("Rika", 32, 4, 40), start_cd=2)
         self.add_moves(Move("Reverse Cursed Technique", -20, 2, 30), start_cd=1)
-        self.add_moves(Move("Call to Rika", 0, 5, 40), start_cd=1)
+        self.add_moves(Move("Call to Rika", 0, 5, 35), start_cd=1)
         self.add_moves(Move("Focus", 0, 0, 0), start_cd=0)
         self.add_moves(Move("Authentic Mutual Love", 0, 5, 50, is_domain=True), start_cd=5)
  
@@ -638,7 +656,7 @@ class Nanami(Jjk):
  
 class Sukuna(Jjk):
     def __init__(self):
-        super().__init__("Ryomen Sukuna", 180, 151,
+        super().__init__("Ryomen Sukuna", 163, 151,
                          "Fuga has a random burning effect. Black Flash has a 10 percent chance of doing double damage.",
                          "The King of Curses")
         self.add_moves(Move("Slash", 20, 0, 20), start_cd=0)
@@ -653,7 +671,7 @@ class Sukuna(Jjk):
  
 class Toji(Jjk):
     def __init__(self):
-        super().__init__("Toji Fushiguro", 174, 0,
+        super().__init__("Toji Fushiguro", 120, 0,
                          "Toji becomes stronger when the opponent opens their domain. Inverted Spear of Heaven can not be dodged.",
                          "No Cursed Energy Monster")
         self.add_moves(Move("Punch", 19, 0, 0), start_cd=0)
@@ -664,7 +682,7 @@ class Toji(Jjk):
  
 class Kenjaku(Jjk):
     def __init__(self):
-        super().__init__("Kenjaku", 149, 115,
+        super().__init__("Kenjaku", 162, 115,
                          "Kenjaku has a chance to receive less damage when the attack is too strong.",
                          "The Immortal")
         self.add_moves(Move("Cursed Spirit Manipulation", 20, 0, 15), start_cd=0)
@@ -677,10 +695,10 @@ class Kenjaku(Jjk):
  
 class Mahito(Jjk):
     def __init__(self):
-        super().__init__("Mahito", 144, 103,
+        super().__init__("Mahito", 172, 103,
                          "Black Flash can hit a double damage critical. Mahito receives less damage for MOST attacks.",
                          "The Soul Shaper", soul_attack=True)
-        self.add_moves(Move("Idle Transfiguration", 33, 3, 25), start_cd=1)
+        self.add_moves(Move("Idle Transfiguration", 35, 3, 25), start_cd=1)
         self.add_moves(Move("Black Flash", 35, 3, 25, crit=2, soul_resistence=True), start_cd=3)
         self.add_moves(Move("Morphing Punch", 12, 0, 15), start_cd=0)
         self.add_moves(Move("Focus", 0, 0, 0), start_cd=0)
@@ -689,7 +707,7 @@ class Mahito(Jjk):
  
 class Jogo(Jjk):
     def __init__(self):
-        super().__init__("Jogo", 162, 106,
+        super().__init__("Jogo", 142, 106,
                          "His first 3 attacks have a random burning effect.",
                          "The Volcano")
         self.add_moves(Move("Disaster Flames", 20, 0, 15, burn=True), start_cd=0)
@@ -701,19 +719,26 @@ class Jogo(Jjk):
  
 class Uraume(Jjk):
     def __init__(self):
-        super().__init__("Uraume", 156, 103,
-                         "Her 'Frost Barrage' attack has a random chance of freezing her opponent for one turn.",
+        super().__init__("Uraume", 140, 103,
+                         "Her 'Frost Barrage' attack has a random chance of freezing her opponent for one turn. Every hit chills the enemy (max 4): chilled fighters deal 4 percent less damage per stack, and Frost Barrage freezes more often.",
                          "The Ice Queen")
         self.add_moves(Move("Icefall", 22, 0, 15), start_cd=0)
         self.add_moves(Move("Frost Calm", 32, 2, 22), start_cd=1)
         self.add_moves(Move("Frost Barrage", 27, 3, 30, freeze=True), start_cd=2)
         self.add_moves(Move("Reverse Cursed Technique", -20, 2, 25), start_cd=1)
         self.add_moves(Move("Focus", 0, 0, 0), start_cd=0)
- 
+    def on_hit(self, enemy, move):
+        if move.damage <= 0:
+            return
+        enemy.chill = min(4, enemy.chill + 1)
+        print(f"\n{enemy.name} is chilled! (Chill x{enemy.chill})")
+        if move.name == "Frost Barrage" and random.randint(1, 100) <= enemy.chill * 6:
+            enemy.frozen = True
+            print(f"{enemy.name} was flash-frozen by the cold!")
  
 class Naoya(Jjk):
     def __init__(self):
-        super().__init__("Naoya Zenin", 142, 109,
+        super().__init__("Naoya Zenin", 152, 109,
                          "By using 'Projection Sorcery' the user can get 'faster' and do more damage that stacks with 'Mach 3 Tackle.' Frame Freeze has a chance of freezing the opponent for one turn.",
                          "The Fastest")
         self.add_moves(Move("Projection Sorcery", 0, 2, 18), start_cd=0)
