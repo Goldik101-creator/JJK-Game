@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+settings.json
+stats.json
+crash.log
+browser-profile/
+build/
+dist/
+*.spec

@@ -1,34 +1,18 @@
 import random
- 
+
 import stats
 from battle import run_battle
-from dialogue import play_dialogue
+from dialogue import draw_dialogue, intro_dialogue, victory_dialogue
 from roster import ROSTER
 from settings import DIFFICULTIES, TEXT_SPEEDS, settings
 from ui import ask_int, confirm, enable_ansi, paint, say, stat_card
- 
+
 MODES = {
     1: ("Human vs AI", (True, False)),
     2: ("Human vs Human", (True, True)),
     3: ("AI vs AI", (False, False)),
 }
- 
-def intro_dialogue(p1, p2):
-    print(paint(f"\n{p1.name} — {p1.title}", "yellow", bold=True))
-    say(paint("VS", "red", bold=True))
-    say(paint(f"{p2.name} — {p2.title}", "yellow", bold=True))
-    if settings.show_dialogue:
-        play_dialogue(p1, p2)
-    say("\nThe fight begins!")
- 
- 
-def victory_dialogue(winner, loser):
-    say(paint(f"\n{winner.name} wins!", "green", bold=True))
- 
- 
-def draw_dialogue(p1, p2):
-    say(paint("\nNobody wins. The battlefield is destroyed!", "yellow", bold=True))
- 
+
 def select_character(label):
     previews = [cls() for cls in ROSTER]
     while True:
@@ -43,61 +27,61 @@ def select_character(label):
         print(stat_card(previews[choice - 1]))
         if confirm("Pick this fighter? (y/n): "):
             return ROSTER[choice - 1]()
- 
+
 def ask_name(default):
     name = input(f"{default} name (blank for '{default}'): ").strip()
     return name or default
- 
- 
+
+
 def play_game():
     print(paint("\nGame modes", "yellow", bold=True))
     for number, (label, _) in MODES.items():
         print(f" {number}. {label}")
     mode = ask_int("Choose a mode: ", 1, len(MODES))
     mode_name, (human1, human2) = MODES[mode]
- 
+
     name1 = ask_name("Player 1") if human1 else None
     name2 = ask_name("Player 2") if human2 else None
     if human1 and human2 and name1.lower() == name2.lower():
         name2 = name2 + " (2)"
- 
+
     label1 = name1 or ("AI 1" if mode == 3 else "AI")
     label2 = name2 or ("AI 2" if mode == 3 else "AI")
     cls1 = type(select_character(label1))
     cls2 = type(select_character(label2))
- 
+
     data = stats.load()
     while True:
         p1, p2 = cls1(), cls2()
         p1.ai = not human1
         p2.ai = not human2
- 
+
         intro_dialogue(p1, p2)
         winner, turns = run_battle(p1, p2)
- 
+
         if winner is None:
             draw_dialogue(p1, p2)
         else:
             victory_dialogue((p1, p2)[winner], (p1, p2)[1 - winner])
         print(paint(f"Match length: {turns} turns", "gray"))
- 
+
         if human1 or human2:
             stats.record_match(data, [
                 {"player": name1, "character": p1.name},
                 {"player": name2, "character": p2.name},
             ], winner)
- 
+
         if not confirm("\nRematch with the same fighters? (y/n): "):
             return
- 
- 
+
+
 def show_stats():
     data = stats.load()
     if data["matches"] == 0:
         print(paint("\nNo matches recorded yet. Play a Human vs AI or Human vs Human game first.", "gray"))
         return
     print(paint(f"\nStats  ({data['matches']} matches recorded)", "yellow", bold=True))
- 
+
     if data["players"]:
         print(paint("\nPlayers", "yellow"))
         print(f"  {'Name':<16} {'W-L-D':<10} {'Win %':>6}   Favorite fighter")
@@ -105,7 +89,7 @@ def show_stats():
         for name, e in ranked:
             record = f"{e['wins']}-{e['losses']}-{e['draws']}"
             print(f"  {name:<16} {record:<10} {stats.win_rate(e):>5.1f}%   {stats.favorite(e)}")
- 
+
     if data["characters"]:
         print(paint("\nFighters", "yellow"))
         print(f"  {'Fighter':<18} {'W-L-D':<10} {'Win %':>6}")
@@ -113,17 +97,17 @@ def show_stats():
         for name, e in ranked:
             record = f"{e['wins']}-{e['losses']}-{e['draws']}"
             print(f"  {name:<18} {record:<10} {stats.win_rate(e):>5.1f}%")
- 
- 
+
+
 def on_off(value):
     return paint("ON", "green") if value else paint("OFF", "red")
- 
- 
+
+
 def cycle(options, current):
     options = list(options)
     return options[(options.index(current) + 1) % len(options)]
- 
- 
+
+
 def settings_menu():
     while True:
         print(paint("\nSettings", "yellow", bold=True))
@@ -153,10 +137,10 @@ def settings_menu():
         else:
             return
         settings.save()
- 
+
 def main():
     enable_ansi()
-    print(paint("\n=== JUJUTSU KAISEN: FIGHTING GAME ===", "magenta", bold=True))
+    print(paint("\n=== JUJUTSU KAISEN: CLASH OF SORCERERS ===", "magenta", bold=True))
     while True:
         print(paint("\nMain menu", "yellow", bold=True))
         print(" 1. Play")
@@ -173,8 +157,8 @@ def main():
         else:
             print("Thanks for playing!")
             return
- 
- 
+
+
 if __name__ == "__main__":
     try:
         main()

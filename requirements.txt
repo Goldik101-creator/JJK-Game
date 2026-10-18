@@ -1,0 +1,1 @@
+# No third-party packages are needed to play. Python 3.9+ only.

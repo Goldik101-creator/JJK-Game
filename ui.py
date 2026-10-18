@@ -2,10 +2,11 @@ import os
 import re
 import textwrap
 import time
- 
+
 from descriptions import describe
+from output import has_sink, out
 from settings import settings
- 
+
 ANSI = {
     "reset": "\033[0m", "bold": "\033[1m",
     "red": "\033[91m", "green": "\033[92m", "yellow": "\033[93m",
@@ -13,38 +14,40 @@ ANSI = {
     "white": "\033[97m", "gray": "\033[90m",
 }
 _ANSI_RE = re.compile(r"\033\[[0-9;]*m")
- 
+
 HP_SCALE = 180  # highest max HP in the roster (for stat card bars)
 CE_SCALE = 151  # highest max CE in the roster
- 
- 
+
+
 def enable_ansi():
     if os.name == "nt":
         os.system("")
- 
- 
+
+
 def paint(text, color=None, bold=False):
-    if not settings.colors or (color is None and not bold):
+    if not (settings.colors or has_sink()) or (color is None and not bold):
         return str(text)
     prefix = (ANSI["bold"] if bold else "") + (ANSI[color] if color else "")
     return f"{prefix}{text}{ANSI['reset']}"
- 
- 
+
+
 def visible_len(text):
     return len(_ANSI_RE.sub("", text))
- 
- 
+
+
 def pause():
+    if has_sink():          # a window paces the text itself
+        return
     delay = settings.pause_time
     if delay > 0:
         time.sleep(delay)
- 
- 
+
+
 def say(text):
     pause()
-    print(text)
- 
- 
+    out(text)
+
+
 
 def bar(current, maximum, width=20, color=None):
     maximum = max(1, maximum)
@@ -59,29 +62,35 @@ def bar(current, maximum, width=20, color=None):
     else:
         body = "#" * filled + "-" * (width - filled)
     return f"[{body}]"
- 
- 
-def status_tags(f):
+
+
+def status_list(f):
+    """The fighter's active statuses as (text, color) pairs."""
     tags = []
     if f.burn_turns > 0:
-        tags.append(paint(f"Burning({f.burn_turns})", "red"))
+        tags.append((f"Burning({f.burn_turns})", "red"))
     if f.frozen:
-        tags.append(paint("Frozen", "cyan"))
+        tags.append(("Frozen", "cyan"))
     if f.domain_active:
-        tags.append(paint(f"Domain: {f.domain_name} ({f.domain_turns})", "magenta"))
+        tags.append((f"Domain: {f.domain_name} ({f.domain_turns})", "magenta"))
     if f.simple_domain:
-        tags.append(paint(f"Simple Domain ({f.simple_domain_turns})", "blue"))
+        tags.append((f"Simple Domain ({f.simple_domain_turns})", "blue"))
     if f.blood_stack:
-        tags.append(paint(f"Blood x{f.blood_stack}", "red"))
+        tags.append((f"Blood x{f.blood_stack}", "red"))
     if f.speed_stack:
-        tags.append(paint(f"Speed x{f.speed_stack}", "yellow"))
+        tags.append((f"Speed x{f.speed_stack}", "yellow"))
     if f.overtime:
-        tags.append(paint("Overtime", "yellow"))
+        tags.append(("Overtime", "yellow"))
     if f.boogie_woogie_dodge:
-        tags.append(paint("Swap ready", "green"))
+        tags.append(("Swap ready", "green"))
+    tags.extend(f.extra_status())
     return tags
- 
- 
+
+
+def status_tags(f):
+    return [paint(text, color) for text, color in status_list(f)]
+
+
 def fighter_panel(f):
     lines = [paint(f.name, "white", bold=True) + paint(f'  "{f.title}"', "gray")]
     lines.append(f"  HP {bar(f.hp, f.max_hp, 24)} {f.hp}/{f.max_hp}")
@@ -93,8 +102,8 @@ def fighter_panel(f):
     if tags:
         lines.append("  " + " | ".join(tags))
     return lines
- 
- 
+
+
 def show_status(p1, p2):
     print()
     for line in fighter_panel(p1):
@@ -102,8 +111,8 @@ def show_status(p1, p2):
     print(paint("          ── VS ──", "gray"))
     for line in fighter_panel(p2):
         print(line)
- 
- 
+
+
 
 def box(lines, width=66, title=None):
     inner = width - 2
@@ -117,8 +126,8 @@ def box(lines, width=66, title=None):
         out.append("║ " + line + " " * pad + " ║")
     out.append("╚" + "═" * inner + "╝")
     return "\n".join(out)
- 
- 
+
+
 def move_label(move):
     if move.is_domain:
         return "Domain"
@@ -127,8 +136,8 @@ def move_label(move):
     if move.damage > 0:
         return f"Damage {move.damage}"
     return "Utility"
- 
- 
+
+
 def stat_card(f, width=66):
     inner = width - 4
     lines = [paint(f.name, "yellow", bold=True) + paint(f'  "{f.title}"', "gray"), ""]
@@ -146,11 +155,11 @@ def stat_card(f, width=66):
     for i, m in enumerate(f.moves, 1):
         lines.append(f"{i}. {m.name:<30} {move_label(m):<10} CE {m.ce_cost:<3} CD {m.cooldown}")
         if settings.show_descriptions:
-            for chunk in textwrap.wrap(describe(m), inner - 3):
+            for chunk in textwrap.wrap(describe(m, f), inner - 3):
                 lines.append("   " + paint(chunk, "gray"))
     return "\n" + box(lines, width)
- 
- 
+
+
 def move_menu(f):
     print(paint(f"\n{f.name}'s moves", "yellow", bold=True) + f"   HP {f.hp}/{f.max_hp} | CE {f.ce}/{f.max_ce}")
     for i, m in enumerate(f.moves, 1):
@@ -164,10 +173,10 @@ def move_menu(f):
         row = f"{i}. {m.name:<30} {move_label(m):<10} CE {m.ce_cost:<3} {status}"
         print(paint(row, None if status == "ready" else "gray"))
         if settings.show_descriptions:
-            print("     " + paint(describe(m), "gray"))
+            print("     " + paint(describe(m, f), "gray"))
     print(paint("(type 'i' to inspect your opponent)", "gray"))
- 
- 
+
+
 
 def ask_int(prompt, lo, hi, extras=()):
     while True:
@@ -177,18 +186,8 @@ def ask_int(prompt, lo, hi, extras=()):
         if raw.isdigit() and lo <= int(raw) <= hi:
             return int(raw)
         print("Invalid choice, try again.")
- 
- 
-def ask_number(prompt, lo, hi, default):
-    while True:
-        raw = input(f"{prompt} [{default}]: ").strip()
-        if raw == "":
-            return default
-        if raw.isdigit() and lo <= int(raw) <= hi:
-            return int(raw)
-        print(f"Enter a number from {lo} to {hi}.")
- 
- 
+
+
 def confirm(prompt):
     while True:
         raw = input(prompt).strip().lower()

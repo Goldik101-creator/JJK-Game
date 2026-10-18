@@ -1,7 +1,9 @@
 import random
- 
-from ui import say
- 
+
+from output import out
+from settings import settings
+from ui import paint, say
+
 SCENES = [
     {
         "left": {"Satoru Gojo"},
@@ -137,8 +139,8 @@ SCENES = [
         ],
     },
 ]
- 
- 
+
+
 def find_scene(name_a, name_b):
     for scene in SCENES:
         if name_a in scene["left"] and name_b in scene["right"]:
@@ -146,8 +148,8 @@ def find_scene(name_a, name_b):
         if name_b in scene["left"] and name_a in scene["right"]:
             return scene, name_b, name_a
     return None
- 
- 
+
+
 def play_dialogue(p1, p2):
     found = find_scene(p1.name, p2.name)
     if found is None:
@@ -155,7 +157,7 @@ def play_dialogue(p1, p2):
         say(f"\n{p1.name}: Oh, you will regret stepping up against me...")
         say(f"{p2.name}: I won't regret it if I destroy you first.")
         return
- 
+
     scene, character, enemy = found
     eligible = [v for v in scene["variants"] if v.get("enemy") in (None, enemy)]
     variant = random.choice(eligible)
@@ -163,3 +165,19 @@ def play_dialogue(p1, p2):
     for line in variant["lines"]:
         say(line.format(character=character, enemy=enemy))
  
+
+def intro_dialogue(p1, p2):
+    out(paint(f"\n{p1.name} — {p1.title}", "yellow", bold=True))
+    say(paint("VS", "red", bold=True))
+    say(paint(f"{p2.name} — {p2.title}", "yellow", bold=True))
+    if settings.show_dialogue:
+        play_dialogue(p1, p2)
+    say("\nThe fight begins!")
+
+
+def victory_dialogue(winner, loser):
+    say(paint(f"\n{winner.name} wins!", "green", bold=True))
+
+
+def draw_dialogue(p1, p2):
+    say(paint("\nNobody wins. The battlefield is destroyed!", "yellow", bold=True))
