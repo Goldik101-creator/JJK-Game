@@ -1,0 +1,35 @@
+import os
+import pygame
+
+def start_game_background(player1, player2):
+    print(os.getcwd())
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+    characters = {}
+
+    character_names = ["gojo", "sukuna", "yuta", "yuji", "megumi", "maki","toji","mahito", "jogo", "kenjaku","nanami","todo","choso", "yuki","uraume","naoya" ]
+    
+    background_path = os.path.join(BASE_DIR, "assets", "backgrounds", "background_1.png")
+    pygame.init()
+    background = pygame.image.load(os.path.join(BASE_DIR, "assets", "backgrounds", "background_1.png"))
+    gojo = pygame.image.load(os.path.join(BASE_DIR, "assets", "characters", f"{player1}.png")) 
+    sukuna = pygame.image.load(os.path.join(BASE_DIR, "assets", "characters", f"{player2}.png"))
+    screen = pygame.display.set_mode((1240, 600))
+
+    running = True
+
+    while running:
+    
+        screen.fill((0,0,0))
+        screen.blit(background, (0, 0))
+        screen.blit(gojo, (10,10))
+        screen.blit(sukuna, (100,100))
+
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+player1 = "gojo"
+player2 = "sukuna"
+start_game_background(player1, player2)
